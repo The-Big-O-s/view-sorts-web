@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Big Os</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="min-h-screen bg-[#f4f7fb] text-slate-900">
+      <header class="border-b border-slate-200 bg-white/95">
+        <div class="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-4 lg:px-8">
+          <div class="flex items-center gap-3">
+            <div class="flex h-9 w-9 items-end justify-center gap-1 rounded-lg bg-slate-950 p-2 text-white shadow-lg shadow-slate-200">
+              <span class="h-2 w-1.5 rounded-sm bg-current"></span>
+              <span class="h-4 w-1.5 rounded-sm bg-current"></span>
+              <span class="h-3 w-1.5 rounded-sm bg-current"></span>
+            </div>
+            <div>
+              <h1 class="text-base font-bold tracking-tight">OrdenaLab</h1>
+              <p class="text-[11px] text-slate-500">
+                Visualizador de algoritmos
+              </p>
+            </div>
+          </div>
+          <div class="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_9px_#34d399]"></span>
+            Listo para ejecutar
+          </div>
+        </div>
+      </header>
+
+      <div class="mx-auto max-w-[1500px] p-4 sm:p-6 lg:p-8">
+        <section class="mb-7">
+          <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+            Aprende paso a paso
+          </p>
+          <h2 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            Mira cómo se ordenan los datos.
+          </h2>
+          <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+            Una plantilla visual para presentar métodos de ordenamiento,
+            comparaciones e intercambios de una forma clara.
+          </p>
+        </section>
+
+        <nav
+          aria-label="Métodos de ordenamiento"
+          class="mb-5 flex items-center gap-2 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
+        >
+          <span class="shrink-0 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+            Métodos
+          </span>
+          <button
+            class="shrink-0 rounded-lg bg-slate-950 px-4 py-2 text-xs font-bold text-white"
+            type="button"
+          >
+            Burbuja
+          </button>
+          <button
+            class="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+            type="button"
+          >
+            Selección
+          </button>
+          <button
+            class="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+            type="button"
+          >
+            Inserción
+          </button>
+          <button
+            class="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+            type="button"
+          >
+            Quicksort
+          </button>
+          <button
+            class="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+            type="button"
+          >
+            Gnome
+          </button>
+          <button
+            class="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+            type="button"
+          >
+            Stooge
+          </button>
+          <button
+            class="ml-auto flex shrink-0 items-center gap-2 rounded-lg border border-dashed border-blue-300 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700"
+            type="button"
+          >
+            <span class="text-base leading-none">+</span>
+            Agregar método
+          </button>
+        </nav>
+
+        <div class="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)_300px]">
+          <aside class="order-2 space-y-4 xl:order-1">
+            <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-950">Configuración</h3>
+                <span class="font-mono text-[10px] text-slate-600">01</span>
+              </div>
+
+              <label
+                class="mb-2 block text-xs font-semibold text-slate-400"
+                for="algorithm"
+              >
+                Algoritmo
+              </label>
+              <select
+                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none"
+                id="algorithm"
+              >
+                <option value="Burbuja" selected>Burbuja</option>
+                <option value="Selección">Selección</option>
+                <option value="Inserción">Inserción</option>
+              </select>
+
+              <div class="mt-5">
+                <div class="mb-2 flex items-center justify-between text-xs">
+                  <label
+                    class="font-semibold text-slate-400"
+                    for="elements"
+                  >
+                    Cantidad de elementos
+                  </label>
+                  <span class="font-mono text-blue-600">24</span>
+                </div>
+                <input
+                  class="w-full accent-blue-600"
+                  value="45"
+                  id="elements"
+                  type="range"
+                >
+              </div>
+
+              <div class="mt-5">
+                <div class="mb-2 flex items-center justify-between text-xs">
+                  <label
+                    class="font-semibold text-slate-400"
+                    for="speed"
+                  >
+                    Velocidad
+                  </label>
+                  <span class="font-mono text-blue-600">Media</span>
+                </div>
+                <input
+                  class="w-full accent-blue-600"
+                  value="60"
+                  id="speed"
+                  type="range"
+                >
+              </div>
+
+              <button
+                class="mt-5 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-700"
+                type="button"
+              >
+                <svg
+                  class="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m16 3 4 4-4 4"></path>
+                  <path d="M4 7h3c5 0 5 10 10 10h3"></path>
+                  <path d="m16 13 4 4-4 4"></path>
+                  <path d="M4 17h3c1.8 0 2.9-1.2 3.8-2.8"></path>
+                </svg>
+                Generar nuevos datos
+              </button>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-950">Leyenda</h3>
+                <span class="font-mono text-[10px] text-slate-600">02</span>
+              </div>
+              <div class="space-y-3 text-xs text-slate-400">
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-sm bg-blue-600"></span>
+                  <span>Elemento sin ordenar</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-sm bg-amber-400"></span>
+                  <span>Comparando ahora</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-sm bg-emerald-400"></span>
+                  <span>Posición ordenada</span>
+                </div>
+              </div>
+            </section>
+          </aside>
+          <aside class="order-3 space-y-4">
+          <section></section>
+            <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-950">
+                  ¿Cómo funciona?
+                </h3>
+                <span class="font-mono text-[10px] text-slate-600">03</span>
+              </div>
+              <div class="mb-4 flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/10 text-violet-300">
+                <svg
+                  class="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 11v5"></path>
+                  <path d="M12 8h.01"></path>
+                </svg>
+              </div>
+              <p class="text-sm leading-6 text-slate-400">
+
+              </p>
+              <div class="mt-5 border-t border-slate-200 pt-4">
+                <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                  Complejidad temporal
+                </p>
+                <div class="flex items-end justify-between">
+                  <span class="font-mono text-xl font-bold text-blue-700">
+                    O(n²)
+                  </span>
+                  <span class="text-xs text-slate-500">caso promedio</span>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+</body>
+</html>
