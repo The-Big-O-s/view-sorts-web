@@ -13,7 +13,7 @@ let stepMs = 1000 / DEFAULT_SPEED;
 let playing = false;
 let timer = null;
 
-//
+
 const handlers = {
   onStep: () => false,
   onReset: () => {},
@@ -36,9 +36,7 @@ function pause() {
 function play() {
   playing = true;
   playLabel.textContent = 'Pausa';
-  timer = setInterval(() => {
-    if (!handlers.onStep()) pause(); // terminó el ordenamiento
-  }, STEP_MS);
+  startTimer();
 }
 
 // Velocidad: el valor del slider son pasos por segundo (mínimo 1)
