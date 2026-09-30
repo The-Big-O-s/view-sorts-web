@@ -34,23 +34,26 @@
         <span class="status-indicator"></span>
         Listo para ejecutar
       </div>
-
-    </div>
+     </div>
+      <nav id="mode-nav">
+      <button type="button" data-mode="single">Individual</button>
+      <button type="button" data-mode="compare">Comparar</button>
+    </nav>
   </header>
 
   <!-- Lista de algoritmos -->
   <!-- Se llena con JS: un botón por algoritmo (los ids vienen del backend) -->
-  <section id="algo-section">
-    <div id="algo-list"></div>
-    <template id="tpl-algo">
-      <button type="button" class="algo-btn" data-algo="">
-        <span class="algo-num"></span>
-        <span class="algo-name"></span>
-        <span class="algo-avg"></span>
-        <span class="algo-mark"></span>
-      </button>
-    </template>
-  </section>
+    <nav class="methods-nav" id="algo-list">
+      <span class="methods-label">Métodos</span>
+      <button data-algo="Bubble" class="btn-method btn-active" type="button">Bubble</button>
+      <button data-algo="Selection" class="btn-method" type="button">Selection</button>
+      <button data-algo="Insertion" class="btn-method" type="button">Insertion</button>
+      <button data-algo="Quick" class="btn-method" type="button">Quick</button>
+      <button data-algo="Gnome" class="btn-method" type="button">Gnome</button>
+      <button data-algo="Stooge" class="btn-method" type="button">Stooge</button>
+      <button data-algo="Exchange" class="btn-method" type="button">Exchange</button>
+      <button data-algo="Merge" class="btn-method" type="button">Merge</button>
+    </nav>
 
   <!-- Barra de controles -->
   <section id="controls">
@@ -230,6 +233,7 @@
     </section>
 
   <script src="js/main.js"></script>
+  <script src="js/selector.js"></script>
 </div>
 </body>
 </html>
