@@ -23,6 +23,7 @@ def bubble_sort(payload: SortRequest):
                 formatj["swapped"] = True
                 arr[j], arr[j+1] = arr[j+1], arr[j]
             steps["steps"].append(formatj.copy())
+        formatj["sorted_index"] = formatj["sorted_index"].copy()
         formatj["sorted_index"].append(n-i-1)
         formatj["compare"] = []
         steps["steps"].append(formatj.copy())

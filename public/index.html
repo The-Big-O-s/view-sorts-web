@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VSA — View Sorts Algorithms</title>
+
+  <!-- Fuente del diseño: Lexend (pesos usados: 300, 400, 500, 600) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>body { font-family: "Lexend", system-ui, sans-serif; }</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Header: logo + selector de modo ============ -->
+  <header id="header">
+    <div id="brand">
+      <span id="logo">VSA</span>
+      <span id="tagline">View Sorts Algorithms — mira cómo se ordena un arreglo, paso a paso.</span>
+    </div>
+    <nav id="mode-nav">
+      <button type="button" data-mode="single">Individual</button>
+      <button type="button" data-mode="compare">Comparar</button>
+    </nav>
+  </header>
+
+  <!-- Lista de algoritmos -->
+  <!-- Se llena con JS: un botón por algoritmo (los ids vienen del backend) -->
+  <section id="algo-section">
+    <div id="algo-list"></div>
+    <template id="tpl-algo">
+      <button type="button" class="algo-btn" data-algo="">
+        <span class="algo-num"></span>
+        <span class="algo-name"></span>
+        <span class="algo-avg"></span>
+        <span class="algo-mark"></span>
+      </button>
+    </template>
+  </section>
+
+  <!-- Barra de controles -->
+  <section id="controls">
+
+    <!-- Datos de entrada -->
+    <div id="input-controls">
+      <button type="button" id="btn-random">
+        Aleatorio
+      </button>
+
+      <label for="input-size">
+        <span>n</span>
+        <input type="range" id="input-size" min="5" max="100">
+        <output id="size-label"></output>
+      </label>
+
+      <div id="manual-group">
+        <input type="text" id="input-manual" placeholder="Manual: 34, 7, 23, 32, 5">
+        <button type="button" id="btn-manual">Usar</button>
+      </div>
+    </div>
+
+    <!-- Velocidad (pasos por segundo) -->
+    <label id="speed-control" for="input-speed">
+      <!-- icono -->
+      <input type="range" id="input-speed" min="0" max="100">
+      <output id="speed-label"></output><span>p/s</span>
+    </label>
+
+    <!-- Reproducción -->
+    <div id="playback">
+      <button type="button" id="btn-play">
+        <!-- icono play/pausa --><span id="play-label"></span>
+      </button>
+      <button type="button" id="btn-step" title="Un paso (→)"><!-- icono --></button>
+      <button type="button" id="btn-reset" title="Reiniciar"><!-- icono --></button>
+      <button type="button" id="btn-end" title="Ir al final"><!-- icono --></button>
+    </div>
+  </section>
+
+  <!-- Mensaje de error del input manual (visible solo si hay error) -->
+  <div id="manual-error" hidden></div>
+
+  <!-- Vista Individual -->
+  <section id="view-single">
+
+    <!-- Columna principal: visualización -->
+    <div id="single-main">
+      <div id="single-title-row">
+        <h2 id="algo-title"></h2>
+        <span id="step-label"></span>
+      </div>
+
+      <canvas id="canvas-main"></canvas>
+
+      <!-- Barra de progreso -->
+      <div id="scrubber">
+        <input type="range" id="input-scrub" min="0">
+        <output id="pct-label"></output>
+      </div>
+
+      <!-- Leyenda -->
+      <div id="legend">
+        <span data-legend="comparing">comparando</span>
+        <span data-legend="swap">intercambio</span>
+        <span data-legend="pivot">pivote</span>
+        <span data-legend="min">mínimo / clave</span>
+        <span data-legend="sorted">ya en su lugar</span>
+      </div>
+
+      <!-- Estadísticas (valores del backend / motor de pasos) -->
+      <div id="stats"></div>
+      <template id="tpl-stat">
+        <div class="stat">
+          <span class="stat-value"></span>
+          <span class="stat-label"></span>
+          <span class="stat-sub"></span>
+        </div>
+      </template>
+    </div>
+
+    <!-- Columna lateral -->
+    <aside id="single-side">
+
+      <!-- Descripción + complejidades -->
+      <div id="algo-info">
+        <p id="algo-desc"></p>
+        <div id="complexities"></div>
+        <template id="tpl-complexity">
+          <span class="cx"><span class="cx-label"></span> <code class="cx-value"></code></span>
+        </template>
+      </div>
+
+      <!-- Pseudocódigo (una línea resaltada por paso) -->
+      <div id="pseudocode">
+        <span class="section-label">Pseudocódigo</span>
+        <div id="code-lines"></div>
+        <template id="tpl-code-line">
+          <div class="code-line">
+            <span class="code-mark"></span>
+            <span class="code-text"></span>
+          </div>
+        </template>
+      </div>
+
+      <!-- Historial de lo que está pasando -->
+      <div id="history-box">
+        <span class="section-label">Qué está pasando</span>
+        <div id="history"></div>
+        <template id="tpl-history-item">
+          <div class="history-item"></div>
+        </template>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Vista Comparar -->
+  <section id="view-compare" hidden>
+
+    <!-- Un panel por algoritmo, cada uno con su canvas -->
+    <div id="panels"></div>
+    <template id="tpl-panel">
+      <div class="panel">
+        <div class="panel-info">
+          <div class="panel-head">
+            <span class="panel-name"></span>
+            <span class="panel-rank"></span>
+          </div>
+          <div class="panel-counts">
+            <span class="panel-comps"></span> comparaciones<br>
+            <span class="panel-moves"></span> movimientos
+          </div>
+          <div class="panel-bar"><div class="panel-bar-fill"></div></div>
+        </div>
+        <canvas class="panel-canvas"></canvas>
+      </div>
+    </template>
+
+    <!-- Tabla de resultados -->
+    <section id="results">
+      <div id="results-head">
+        <h3>Resultados</h3>
+        <span>Mismo arreglo para todos · pasos = comparaciones + movimientos</span>
+      </div>
+
+      <div id="results-table-wrap">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Método</th>
+              <th>Comparaciones</th>
+              <th>Movimientos</th>
+              <th>Pasos totales</th>
+              <th>Tiempo real</th>
+              <th>Promedio</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+        <template id="tpl-result-row">
+          <tr>
+            <td class="r-rank"></td>
+            <td class="r-name"></td>
+            <td class="r-comps"></td>
+            <td class="r-moves"></td>
+            <td class="r-total">
+              <div class="r-bar"><div class="r-bar-total"></div><div class="r-bar-live"></div></div>
+              <span class="r-total-num"></span>
+            </td>
+            <td class="r-ms"></td>
+            <td class="r-avg"></td>
+          </tr>
+        </template>
+      </div>
+    </section>
+  </section>
+
+</div>
+</body>
+</html>
