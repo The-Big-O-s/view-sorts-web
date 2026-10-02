@@ -1,5 +1,5 @@
 // api.js — comunicación con el backend de Python
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = '/api';
 
 
 const RUTAS_POR_ALGORITMO = {
