@@ -24,15 +24,15 @@ def merge_sort(payload: SortRequest):
 
         # Comparar elementos de ambas listas y agregarlos en orden
         while i < len(izquierda) and j < len(derecha):
-            toma_derecha = izquierda[i] > derecha[j]  # <= toma de la izquierda (estable)
+            toma_derecha = izquierda[i] > derecha[j]  # toma de la izquierda (estable)
 
             # Snapshot ANTES de escribir: los valores comparados siguen intactos
             formatj["array"] = arreglo.copy()
-            formatj["compare"] = [start + i, start + len(izquierda) + j]  # índices globales
+            formatj["compare"] = [start + i, start + len(izquierda) + j]  # indices globales
             formatj["swapped"] = toma_derecha
             steps["steps"].append(formatj.copy())
 
-            # Ahora sí se escribe en el array global
+            # Ahora si se escribe en el array global
             if toma_derecha:
                 resultado.append(derecha[j])
                 j += 1
@@ -56,7 +56,7 @@ def merge_sort(payload: SortRequest):
     def merge_sort_list(lista, start=0):
         arr = lista.copy()
 
-        # Caso base: si la lista tiene 0 o 1 elemento, ya está ordenada
+        # Caso base: si la lista tiene 0 o 1 elemento, ya esta ordenada
         if len(arr) <= 1:
             return arr
 
