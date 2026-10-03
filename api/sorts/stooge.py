@@ -1,10 +1,16 @@
-from fastapi import APIRouter
-from ..schemas import SortRequest
+from fastapi import APIRouter, HTTPException
+from ..schemas import SortRequest, LIMITE_STOOGE
 
 router = APIRouter()
 
 @router.post("/api/stooge")
 def stooge_sort(payload: SortRequest):
+    if len(payload.array) > LIMITE_STOOGE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Maximo {LIMITE_STOOGE} elementos.",
+        )
+
     steps = {"steps": []}
     arr = payload.array.copy()   # copia, para no modificar la lista de la petición
     n = len(arr)
