@@ -14,10 +14,10 @@ const COLORES = {
 
 function ajustarTamanoCanvas(cv = canvas, c = ctx) {
   const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const rect = cv.getBoundingClientRect();
+  cv.width = rect.width * dpr;
+  cv.height = rect.height * dpr;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 function colorParaIndice(i, resaltados) {
@@ -42,7 +42,7 @@ function pasoAResaltados(paso) {
 function dibujarArreglo(arreglo, resaltados = {}, cv = canvas, c = ctx) {
   const { width: ancho, height: alto } = cv.getBoundingClientRect();
   
-  ctx.clearRect(0, 0, ancho, alto);
+  c.clearRect(0, 0, ancho, alto);
   if (arreglo.length === 0) return;
 
   const maxValor = Math.max(...arreglo, 1);
@@ -54,8 +54,8 @@ function dibujarArreglo(arreglo, resaltados = {}, cv = canvas, c = ctx) {
     const x = i * (anchoBarra + espacio);
     const y = alto - alturaBarra;
 
-    ctx.fillStyle = colorParaIndice(i, resaltados);
-    ctx.fillRect(x, y, anchoBarra, alturaBarra);
+    c.fillStyle = colorParaIndice(i, resaltados);
+    c.fillRect(x, y, anchoBarra, alturaBarra);
   });
 }
 
