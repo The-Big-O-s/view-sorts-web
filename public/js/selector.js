@@ -20,10 +20,8 @@ algoList.addEventListener('click', (e) => {
   if (!modoComparar) { selectedAlgo = algo; pintarActivos(); return algoSelector.onChange?.(algo); }
   const i = comparados.indexOf(algo);
   if (i >= 0) comparados.splice(i, 1); else comparados.push(algo);
-  if (comparados.length > 2) comparados.shift();
   pintarActivos();
-
-  algoSelector.onChange?.();
+  algoSelector.onCompareChange?.();
 });
 
 window.algoSelector = algoSelector;
@@ -35,6 +33,7 @@ window.algoSelector = algoSelector;
   const arregloComun = () => { const a = window.arrayManager.getArray(); return algoSelector.getComparados().includes('Stooge') ? a.slice(0, LIMITE_STOOGE) : a; };
  
   function construir() {
+    window.controls.pause?.();
     version++; indice = 0; listos = cargando = false;
     cont.replaceChildren(); tabla.replaceChildren();
     const a = arregloComun();
@@ -47,7 +46,7 @@ window.algoSelector = algoSelector;
       ajustarTamanoCanvas(cv, c); dibujarArreglo(a, {}, cv, c);
       return { nombre, nodo, cv, c, pasos: [] };
     });
-    hint.textContent = paneles.length === 2 ? 'Listo: presiona Play o Paso para comparar.' : `Elige 2 métodos (${paneles.length}/2).`;
+    hint.textContent = paneles.length >= 2 ? 'Listo: presiona Play o Paso para comparar.' :`Elige al menos 2 métodos (${paneles.length}  seleccionado${paneles.length === 1 ? '' : 's'}).`;
     warn.hidden = !algoSelector.getComparados().includes('Stooge');
   }
  
@@ -83,7 +82,7 @@ window.algoSelector = algoSelector;
  
   async function cargar() {
     const metodos = algoSelector.getComparados();
-    if (cargando || metodos.length !== 2) return;
+    if (cargando || paneles.length < 2) return;
     cargando = true;
     const v = version, a = arregloComun();
     try {
@@ -101,7 +100,7 @@ window.algoSelector = algoSelector;
   }
  
   function avanzar() {
-    if (paneles.length !== 2) return false;
+    if (paneles.length < 2) return false;
     if (!listos) { cargar(); return true; }
     if (indice >= Math.max(...paneles.map(p => p.pasos.length)) - 1) return false;
     indice++; dibujar(); return true;
