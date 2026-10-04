@@ -12,7 +12,7 @@ const COLORES = {
   sorted: '#10b981'     // ya en su lugar
 };
 
-function ajustarTamanoCanvas() {
+function ajustarTamanoCanvas(cv = canvas, c = ctx) {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width * dpr;
@@ -29,15 +29,23 @@ function colorParaIndice(i, resaltados) {
   return COLORES.normal;
 }
 
-function dibujarArreglo(arreglo, resaltados = {}) {
-  const ancho = canvas.getBoundingClientRect().width;
-  const alto = canvas.getBoundingClientRect().height;
-
+function pasoAResaltados(paso) {
+  const validos = (lista = []) => lista.filter(i => i >= 0); // gnome manda -1 en i = 0
+  return {
+    comparing: validos(paso.compare),
+    swap: paso.swapped ? validos(paso.swap?.length ? paso.swap : paso.compare) : [],
+    sorted: paso.sorted_index ?? [],
+    pivot: paso.pivot ?? undefined,
+    min: paso.key ?? undefined,
+  };
+}
+function dibujarArreglo(arreglo, resaltados = {}, cv = canvas, c = ctx) {
+  const { width: ancho, height: alto } = cv.getBoundingClientRect();
+  
   ctx.clearRect(0, 0, ancho, alto);
-
   if (arreglo.length === 0) return;
 
-  const maxValor = Math.max(...arreglo);
+  const maxValor = Math.max(...arreglo, 1);
   const espacio = 2;
   const anchoBarra = (ancho - espacio * (arreglo.length - 1)) / arreglo.length;
 
@@ -60,8 +68,11 @@ window.addEventListener('resize', () => {
   dibujarArreglo(window.arrayManager.getArray());
 });
 
+window.appState.fil((estado, motivo) => {
+  if (motivo === 'arreglo') redibujarSinResaltados(estado.arreglo);
+});
+
 ajustarTamanoCanvas();
-window.arrayManager.onChange = redibujarSinResaltados;
 dibujarArreglo(window.arrayManager.getArray());
 
 window.dibujarArreglo = dibujarArreglo;
