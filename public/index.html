@@ -9,43 +9,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>body { font-family: "Lexend", system-ui, sans-serif; }</style>
-  <style>
-  #canvas-main {
-    width: 100%;
-    height: 320px;
-    display: block;
-  }
-</style>
+  <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
   <div id="app">
   <header class="header">
       <div class="header-container">
-        
-        <!-- Logo y Título -->
         <div class="brand">
-          <div class="logo-icon">
-            <span class="bar bar-small"></span>
-            <span class="bar bar-large"></span>
-            <span class="bar bar-medium"></span>
-          </div>
-          <div class="title-group">
             <h1 class="main-title">VSA</h1>
-            <p class="subtitle">Métodos de Ordenamientos</p>
           </div>
-        </div>
-
-      <!-- Estado (Listo para ejecutar) -->
-      <div class="status">
-        <span class="status-indicator"></span>
-        Listo para ejecutar
+        <nav id="mode-nav">
+        <button type="button" data-mode="single" class="active">Individual</button>
+        <button type="button" data-mode="compare">Comparar</button>
+        </nav>
       </div>
-     </div>
-      <nav id="mode-nav">
-      <button type="button" data-mode="single">Individual</button>
-      <button type="button" data-mode="compare">Comparar</button>
-    </nav>
   </header>
 
   <!-- Lista de algoritmos -->
@@ -80,16 +57,16 @@
       <div id="manual-group">
         <input type="text" id="input-manual" placeholder="Manual: 34, 7, 23, 32, 5">
         <button type="button" id="btn-manual">Usar</button>
+        </div>
       </div>
+      <div id="stooge-warning" hidden>
+    ⚠️ Stooge sort solo ordenará los primeros 20 elementos.
     </div>
-    <div id="stooge-warning" hidden>
-  ⚠️ Stooge sort solo ordenará los primeros 20 elementos.
-  </div>
 
     <!-- Velocidad (pasos por segundo) -->
     <label id="speed-control" for="input-speed">
       <!-- icono -->
-      <input type="range" id="input-speed" min="0" max="100">
+      <input type="range" id="input-speed" min="1" max="100">
       <output id="speed-label"></output><span>p/s</span>
     </label>
 
@@ -98,9 +75,9 @@
       <button type="button" id="btn-play">
         <!-- icono play/pausa --><span id="play-label"></span>
       </button>
-      <button type="button" id="btn-step" title="Un paso (→)"><!-- icono --></button>
-      <button type="button" id="btn-reset" title="Reiniciar"><!-- icono --></button>
-      <button type="button" id="btn-end" title="Ir al final"><!-- icono --></button>
+      <button type="button" id="btn-step" title="Un paso (→)">Paso</button>
+      <button type="button" id="btn-reset" title="Reiniciar">Reiniciar</button>
+      <button type="button" id="btn-end" title="Ir al final">Fin</button>
     </div>
   </section>
 
@@ -238,7 +215,7 @@
             <td class="r-avg"></td>
           </tr>
         </template>
-        </div>
+       </div>
       </section>
     </section>
 
