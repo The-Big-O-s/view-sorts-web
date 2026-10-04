@@ -17,6 +17,7 @@ let timer = null;
 const handlers = {
   onStep: () => false,
   onReset: () => {},
+  pause: () => pause(),
 };
 
 function startTimer() {

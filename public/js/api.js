@@ -53,10 +53,11 @@ async function leerError(respuesta) {
   if (respuesta.status >= 500) return 'El servidor tuvo un problema. Intenta de nuevo.';
   return `El backend respondió con error ${respuesta.status}.`;
 }
-async function ConexionAlBackend() {
-  const arreglo = window.arrayManager.getArrayParaBackend();
-  const metodo = window.algoSelector.getSelected();
+async function ConexionAlBackend(
 
+   metodo = window.algoSelector.getSelected(),
+   arreglo = window.arrayManager.getArrayParaBackend(metodo),
+  ){
   const ruta = RUTAS_POR_ALGORITMO[metodo];
   if (!ruta) {
     const mensaje = `No hay una ruta de API para "${metodo}".`;
