@@ -1,6 +1,6 @@
-// animacion.js — recorre los steps del backend y los conecta con el estado central y el dibujo
+// animacion.js — recorre los pasos del backend y los conecta con el estado central y el dibujo
 
-// ---- 1. Traducir cada formato de paso al vocabulario único que entiende dibujarArreglo ----
+// Formato de pasos de los algoritmos
 const FAMILIA_POR_ALGORITMO = {
   Bubble: 'estandar',
   Selection: 'estandar',
@@ -35,7 +35,7 @@ function normalizarPaso(paso, metodo) {
     };
   }
 
-  // estandar: Bubble, Selection, Gnome, Exchange, Merge, Stooge
+  // Mismo formato
   return {
     array: paso.array,
     comparing: paso.compare ?? [],
@@ -44,29 +44,29 @@ function normalizarPaso(paso, metodo) {
   };
 }
 
-// ---- 2. Referencias al DOM que faltaban por usar ----
+
 const stepLabel = document.getElementById('step-label');
 const inputScrub = document.getElementById('input-scrub');
 const pctLabel = document.getElementById('pct-label');
 const btnEnd = document.getElementById('btn-end');
 
-// ---- 3. Pedir los pasos al backend y guardarlos en el estado central ----
+//Pedir los pasos
 async function cargarPasosDelBackend() {
   try {
-    const datos = await window.ConexionAlBackend(); // ya viene como { steps: [...] }
+    
+    const datos = await window.ConexionAlBackend(); 
     window.appState.setPasos(datos.steps);
   } catch (err) {
-    // api.js ya mostró el error en su propia barra (#api-status); aquí solo lo registramos
     console.error('No se pudieron obtener los pasos:', err);
   }
 }
 
-// ---- 4. Dibujar exactamente lo que diga el estado en este momento ----
+// Se muestra exactamente lo que diga el estado en este momento
 function dibujarPasoActual() {
   const { pasos, indicePaso, algoritmo, arreglo } = window.appState;
 
   if (pasos.length === 0) {
-    dibujarArreglo(arreglo, {}); // todavía no hay pasos calculados: solo el arreglo plano
+    dibujarArreglo(arreglo, {}); //Solo se dibuja el arreglo
     actualizarIndicadores(0, 0);
     return;
   }
@@ -84,7 +84,7 @@ function actualizarIndicadores(indice, total) {
   pctLabel.textContent = total === 0 ? '0%' : `${Math.round((indice / total) * 100)}%`;
 }
 
-// ---- 5. Conectar con el reproductor (main.js) ----
+// Conectar con el main.js
 window.controls.onStep = () => window.appState.siguientePaso();
 window.controls.onReset = () => window.appState.irAPaso(0);
 
@@ -96,14 +96,13 @@ btnEnd?.addEventListener('click', () => {
   window.appState.irAPaso(window.appState.pasos.length - 1);
 });
 
-// ---- 6. Reaccionar a CUALQUIER cambio del estado central ----
+// Reaccionar a cualquier cambio del estado central 
 window.appState.fil((estado, motivo) => {
   if (motivo === 'algoritmo' || motivo === 'arreglo') {
-    cargarPasosDelBackend(); // cambió el algoritmo o el arreglo: hay que recalcular los pasos
+    cargarPasosDelBackend(); //si cambia el algoritmo o el arreglo, se piden los pasos de nuevo
   }
-  dibujarPasoActual(); // sin importar el motivo, refleja el estado actual en el canvas
+  dibujarPasoActual(); // siempre dibuja el paso actual
 });
 
-// ---- 7. Carga inicial ----
 dibujarPasoActual();     // dibuja el arreglo plano mientras llega la primera respuesta
 cargarPasosDelBackend(); // pide los pasos para el algoritmo/arreglo iniciales

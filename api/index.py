@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from .sorts.bubble import router as bubble
 from .sorts.exchange import router as exchange
 from .sorts.gnome import router as gnome
@@ -23,5 +22,3 @@ for router in routers:
 def health_check():
     return {"status": "ok"}
 
-# Al final: sirve tu carpeta public como frontend
-app.mount("/", StaticFiles(directory="public", html=True), name="frontend")
