@@ -25,11 +25,13 @@ def selection_sort(payload: SortRequest):
                 formatj["swapped"] = True
                 min_idx = j
             steps["steps"].append(formatj.copy())
+        arr[i], arr[min_idx] = arr[min_idx], arr[i] # Intercambiamos el menor encontrado con el primer elemento actual
+        formatj["array"] = arr.copy()
+        formatj["swapped"] = False
         formatj["sorted_index"] = formatj["sorted_index"].copy()
         formatj["sorted_index"].append(i) #se agrega a la copia de sorted index ()
         formatj["compare"] = [] #Agrega un paso para identificar el index ordenado 
         steps["steps"].append(formatj.copy()) 
-        arr[i], arr[min_idx] = arr[min_idx], arr[i] # Intercambiamos el menor encontrado con el primer elemento actual
     
 
     return steps

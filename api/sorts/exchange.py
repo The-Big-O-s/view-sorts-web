@@ -24,6 +24,8 @@ def exchange_sort(payload: SortRequest):
                 formatj["swapped"] = True
                 arr[i], arr[j] = arr[j], arr[i]
             steps["steps"].append(formatj.copy())
+        formatj["array"] = arr.copy()
+        formatj["swapped"] = False
         formatj["sorted_index"] = formatj["sorted_index"].copy()
         formatj["sorted_index"].append(i)
         formatj["compare"] = []
