@@ -14,10 +14,8 @@ let arregloActual = [];
 
 const arrayManager = {
   getArray: () => arregloActual,
-  getArrayParaBackend: () => {
-    const algo = window.algoSelector.getSelected();
-    return algo === 'Stooge' ? arregloActual.slice(0, LIMITE_STOOGE) : arregloActual;
-  },
+  getArrayParaBackend: (algo = window.algoSelector.getSelected()) =>
+    algo === 'Stooge' ? arregloActual.slice(0, LIMITE_STOOGE) : arregloActual,
   onChange: null, 
 };
 
