@@ -15,10 +15,10 @@ app = FastAPI(
 )
 
 routers = [bubble, exchange, gnome, insertion, merge, quick, selection, stooge]
-
 for router in routers:
     app.include_router(router)
 
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}
+
