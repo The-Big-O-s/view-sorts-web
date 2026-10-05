@@ -26,9 +26,7 @@
   </header>
 
   <!-- Lista de algoritmos -->
-  <!-- Se llena con JS: un botón por algoritmo (los ids vienen del backend) -->
     <nav class="methods-nav" id="algo-list">
-      <span class="methods-label">Métodos</span>
       <button data-algo="Bubble" class="btn-method btn-active" type="button">Bubble</button>
       <button data-algo="Selection" class="btn-method" type="button">Selection</button>
       <button data-algo="Insertion" class="btn-method" type="button">Insertion</button>
@@ -86,13 +84,17 @@
 
   <!-- Vista Individual -->
   <section id="view-single">
-
-    <!-- Columna principal: visualización -->
     <div id="single-main">
       <div id="single-title-row">
         <h2 id="algo-title"></h2>
         <span id="step-label"></span>
       </div>
+
+      <p id="algo-desc"></p>
+      <div id="complexities"></div>
+      <template id="tpl-complexity">
+        <span class="cx"><span class="cx-label"></span> <code class="cx-value"></code></span>
+      </template>
 
       <canvas id="canvas-main"></canvas>
 
@@ -121,41 +123,39 @@
         </div>
       </template>
     </div>
-
-    <!-- Columna lateral -->
-    <aside id="single-side">
-
-      <!-- Descripción + complejidades -->
-      <div id="algo-info">
-        <p id="algo-desc"></p>
-        <div id="complexities"></div>
-        <template id="tpl-complexity">
-          <span class="cx"><span class="cx-label"></span> <code class="cx-value"></code></span>
-        </template>
-      </div>
-
-      <!-- Pseudocódigo (una línea resaltada por paso) -->
-      <div id="pseudocode">
-        <span class="section-label">Pseudocódigo</span>
-        <div id="code-lines"></div>
-        <template id="tpl-code-line">
-          <div class="code-line">
-            <span class="code-mark"></span>
-            <span class="code-text"></span>
-          </div>
-        </template>
-      </div>
-
-      <!-- Historial de lo que está pasando -->
-      <div id="history-box">
-        <span class="section-label">Qué está pasando</span>
-        <div id="history"></div>
-        <template id="tpl-history-item">
-          <div class="history-item"></div>
-        </template>
-      </div>
-    </aside>
-  </section>
+    
+        <section id="single-results">
+        <div id="single-results-head">
+          <h3>Resultados</h3>
+          <span>pasos = comparaciones + movimientos</span>
+        </div>
+        <div id="single-results-wrap">
+          <table id="single-results-table">
+            <thead>
+              <tr>
+                <th>Método</th><th>Comparaciones</th><th>Movimientos</th><th>Pasos totales</th><th>Tiempo real</th><th>Promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="r-name" id="sr-name"></td>
+                <td id="sr-comps"></td>
+                <td id="sr-moves"></td>
+                <td>
+                  <div class="r-bar">
+                    <div class="r-bar-total" id="sr-bar-total"></div>
+                    <div class="r-bar-live" id="sr-bar-live"></div>
+                  </div>
+                  <span class="r-total-num" id="sr-total"></span>
+                </td>
+                <td id="sr-ms"></td>
+                <td id="sr-avg"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
 
   <!-- Vista Comparar -->
   <section id="view-compare" hidden>
