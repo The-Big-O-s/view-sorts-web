@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VSA — View Sorts Algorithms</title>
+
+  <!-- Fuente del diseño: Lexend (pesos usados: 300, 400, 500, 600) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+     <!-- Barra fija: navegación entre secciones -->
+  <header class="header">
+      <div class="header-container">
+        <div class="brand">
+            <h1 class="main-title"></h1><a href="index.html" class="brand-link">VSA</a></h1>
+          </div>
+        <nav class="site-nav" aria-label="Secciones">
+          <a href="ordenamiento.html" aria-current="page">Ordenamiento</a>
+          <a href="huffman.html">Huffman</a>
+        </nav>
+      </div>
+  </header>
+  <div id="app">
+      <!-- Modo de la sección Ordenamiento -->
+  <div class="mode-row">
+    <nav id="mode-nav" aria-label="Modo">
+        <button type="button" data-mode="single" class="active">Individual</button>
+        <button type="button" data-mode="compare">Comparar</button>
+    </nav>
+  </div>
+
+  <!-- Lista de algoritmos -->
+    <nav class="methods-nav" id="algo-list">
+      <button data-algo="Bubble" class="btn-method btn-active" type="button">Bubble</button>
+      <button data-algo="Selection" class="btn-method" type="button">Selection</button>
+      <button data-algo="Insertion" class="btn-method" type="button">Insertion</button>
+      <button data-algo="Quick" class="btn-method" type="button">Quick</button>
+      <button data-algo="Gnome" class="btn-method" type="button">Gnome</button>
+      <button data-algo="Stooge" class="btn-method" type="button">Stooge</button>
+      <button data-algo="Exchange" class="btn-method" type="button">Exchange</button>
+      <button data-algo="Merge" class="btn-method" type="button">Merge</button>
+    </nav>
+
+  <!-- Barra de controles -->
+  <section id="controls">
+
+    <!-- Datos de entrada -->
+    <div id="input-controls">
+      <button type="button" id="btn-random">
+        Aleatorio
+      </button>
+
+      <label for="input-size">
+        <span>n</span>
+        <input type="range" id="input-size" min="5" max="50">
+        <output id="size-label"></output>
+      </label>
+
+      <div id="manual-group">
+        <input type="text" id="input-manual" placeholder="Manual: 34, 7, 23, 32, 5">
+        <button type="button" id="btn-manual">Usar</button>
+        </div>
+      </div>
+      <div id="stooge-warning" hidden>
+    ⚠️ Stooge sort solo ordenará los primeros 20 elementos.
+    </div>
+
+    <!-- Velocidad (pasos por segundo) -->
+    <label id="speed-control" for="input-speed">
+      <!-- icono -->
+      <input type="range" id="input-speed" min="1" max="100">
+      <output id="speed-label"></output><span>p/s</span>
+    </label>
+
+    <!-- Reproducción -->
+    <div id="playback">
+      <button type="button" id="btn-play">
+        <!-- icono play/pausa --><span id="play-label"></span>
+      </button>
+      <button type="button" id="btn-step" title="Un paso (→)">Paso</button>
+      <button type="button" id="btn-reset" title="Reiniciar">Reiniciar</button>
+      <button type="button" id="btn-end" title="Ir al final">Fin</button>
+    </div>
+  </section>
+
+  <!-- Mensaje de error del input manual (visible solo si hay error) -->
+  <div id="manual-error" hidden></div>
+
+  <!-- Vista Individual -->
+  <section id="view-single">
+    <div id="single-main">
+      <div id="single-title-row">
+        <h2 id="algo-title"></h2>
+        <span id="step-label"></span>
+      </div>
+
+      <p id="algo-desc"></p>
+      <div id="complexities"></div>
+      <template id="tpl-complexity">
+        <span class="cx"><span class="cx-label"></span> <code class="cx-value"></code></span>
+      </template>
+
+      <canvas id="canvas-main"></canvas>
+
+      <!-- Barra de progreso -->
+      <div id="scrubber">
+        <input type="range" id="input-scrub" min="0">
+        <output id="pct-label"></output>
+      </div>
+
+      <!-- Leyenda -->
+      <div id="legend">
+        <span data-legend="comparing">comparando</span>
+        <span data-legend="swap">intercambio</span>
+        <span data-legend="pivot">pivote</span>
+        <span data-legend="min">mínimo / clave</span>
+        <span data-legend="sorted">ya en su lugar</span>
+      </div>
+
+      <!-- Estadísticas (valores del backend / motor de pasos) -->
+      <div id="stats"></div>
+      <template id="tpl-stat">
+        <div class="stat">
+          <span class="stat-value"></span>
+          <span class="stat-label"></span>
+          <span class="stat-sub"></span>
+        </div>
+      </template>
+    </div>
+    
+        <section id="single-results">
+        <div id="single-results-head">
+          <h3>Resultados</h3>
+          <span>pasos = comparaciones + movimientos</span>
+        </div>
+        <div id="single-results-wrap">
+          <table id="single-results-table">
+            <thead>
+              <tr>
+                <th>Método</th><th>Comparaciones</th><th>Movimientos</th><th>Pasos totales</th><th>Tiempo real</th><th>Promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="r-name" id="sr-name"></td>
+                <td id="sr-comps"></td>
+                <td id="sr-moves"></td>
+                <td>
+                  <div class="r-bar">
+                    <div class="r-bar-total" id="sr-bar-total"></div>
+                    <div class="r-bar-live" id="sr-bar-live"></div>
+                  </div>
+                  <span class="r-total-num" id="sr-total"></span>
+                </td>
+                <td id="sr-ms"></td>
+                <td id="sr-avg"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+  <!-- Vista Comparar -->
+  <section id="view-compare" hidden>
+    <p id="compare-hint"></p>
+
+    <!-- Un panel por algoritmo, cada uno con su canvas -->
+    <div id="panels"></div>
+    <template id="tpl-panel">
+      <div class="panel">
+        <div class="panel-info">
+          <div class="panel-head">
+            <span class="panel-name"></span>
+            <span class="panel-rank"></span>
+          </div>
+          <div class="panel-counts">
+            <span class="panel-comps"></span> comparaciones<br>
+            <span class="panel-moves"></span> movimientos
+          </div>
+          <div class="panel-bar"><div class="panel-bar-fill"></div></div>
+        </div>
+        <canvas class="panel-canvas"></canvas>
+      </div>
+    </template>
+
+    <!-- Tabla de resultados -->
+    <section id="results">
+      <div id="results-head">
+        <h3>Resultados</h3>
+        <span>Mismo arreglo para todos · pasos = comparaciones + movimientos</span>
+      </div>
+
+      <div id="results-table-wrap">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Método</th>
+              <th>Comparaciones</th>
+              <th>Movimientos</th>
+              <th>Pasos totales</th>
+              <th>Tiempo real</th>
+              <th>Promedio</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+        <template id="tpl-result-row">
+          <tr>
+            <td class="r-rank"></td>
+            <td class="r-name"></td>
+            <td class="r-comps"></td>
+            <td class="r-moves"></td>
+            <td class="r-total">
+              <div class="r-bar"><div class="r-bar-total"></div><div class="r-bar-live"></div></div>
+              <span class="r-total-num"></span>
+            </td>
+            <td class="r-ms"></td>
+            <td class="r-avg"></td>
+          </tr>
+        </template>
+       </div>
+      </section>
+    </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/selector.js"></script>
+  <script src="js/arreglo.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/estado.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/animacion.js"></script>
+</div>
+</body>
+</html>
