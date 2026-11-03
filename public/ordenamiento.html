@@ -12,18 +12,26 @@
   <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-  <div id="app">
+     <!-- Barra fija: navegación entre secciones -->
   <header class="header">
       <div class="header-container">
         <div class="brand">
-            <h1 class="main-title">VSA</h1>
+            <h1 class="main-title"></h1><a href="index.html" class="brand-link">VSA</a></h1>
           </div>
-        <nav id="mode-nav">
-        <button type="button" data-mode="single" class="active">Individual</button>
-        <button type="button" data-mode="compare">Comparar</button>
+        <nav class="site-nav" aria-label="Secciones">
+          <a href="ordenamiento.html" aria-current="page">Ordenamiento</a>
+          <a href="huffman.html">Huffman</a>
         </nav>
       </div>
   </header>
+  <div id="app">
+      <!-- Modo de la sección Ordenamiento -->
+  <div class="mode-row">
+    <nav id="mode-nav" aria-label="Modo">
+        <button type="button" data-mode="single" class="active">Individual</button>
+        <button type="button" data-mode="compare">Comparar</button>
+    </nav>
+  </div>
 
   <!-- Lista de algoritmos -->
     <nav class="methods-nav" id="algo-list">
