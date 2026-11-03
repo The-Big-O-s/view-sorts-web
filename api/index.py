@@ -8,13 +8,15 @@ from .sorts.quick import router as quick
 from .sorts.selection import router as selection
 from .sorts.stooge import router as stooge
 
+from .huffman.compress import router as compress
+
 app = FastAPI(
     title="Visualizador de Algoritmos",
     docs_url="/api/docs",
     openapi_url="/api/openapi.json"
 )
 
-routers = [bubble, exchange, gnome, insertion, merge, quick, selection, stooge]
+routers = [bubble, exchange, gnome, insertion, merge, quick, selection, stooge, compress]
 for router in routers:
     app.include_router(router)
 
