@@ -12,18 +12,6 @@
   <link rel="stylesheet" href="css/huffman.css">
 </head>
 <body>
-  <!-- Barra fija: navegación entre secciones -->
-  <header class="header">
-    <div class="header-container">
-      <div class="brand">
-        <h1 class="main-title"><a href="index.html" class="brand-link">VSA</a></h1>
-      </div>
-      <nav class="site-nav" aria-label="Secciones">
-        <a href="ordenamiento.html">Ordenamiento</a>
-        <a href="huffman.html" aria-current="page">Huffman</a>
-      </nav>
-    </div>
-  </header>
 <div id="app">
  
   <!-- Fuente del texto: archivo local o Project Gutenberg -->
@@ -35,7 +23,7 @@
     <input id="hz-file" class="sr-only" type="file" accept=".txt,text/plain">
  
     <form class="hz-pill hz-search" id="hz-search" role="search">
-      <input type="search" id="hz-q" value="quijote" placeholder="Buscar cualquier libro en Gutenberg: título o autor" aria-label="Buscar en Project Gutenberg por título o autor">
+      <input type="search" id="hz-q"placeholder="Buscar cualquier libro por título o autor" aria-label="Buscar en Project Gutenberg por título o autor">
       <button type="submit" class="btn-accent" id="hz-buscar">Buscar</button>
     </form>
  
