@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VSA — Compresión de Huffman</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/huffman.css">
+</head>
+<body>
+<div id="app">
+ 
+  <!-- Fuente del texto: archivo local o Project Gutenberg -->
+  <section id="controls" aria-label="Fuente del texto">
+    <label class="hz-pill hz-upload" for="hz-file">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+      <span>Subir .txt</span>
+    </label>
+    <input id="hz-file" class="sr-only" type="file" accept=".txt,text/plain">
+ 
+    <form class="hz-pill hz-search" id="hz-search" role="search">
+      <input type="search" id="hz-q"placeholder="Buscar cualquier libro por título o autor" aria-label="Buscar en Project Gutenberg por título o autor">
+      <button type="submit" class="btn-accent" id="hz-buscar">Buscar</button>
+    </form>
+ 
+    <div class="hz-pill hz-current">
+      <span id="hz-current-label"><span class="hz-muted">Ningún archivo cargado</span></span>
+      <button type="button" class="btn-accent" id="hz-run" disabled>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>Comprimir
+      </button>
+    </div>
+ 
+    <div class="hz-results" id="hz-results" hidden>
+      <div class="hz-results-head">
+        <span id="hz-results-count"></span>
+        <button type="button" id="hz-results-close" aria-label="Cerrar resultados">Cerrar</button>
+      </div>
+      <ul id="hz-results-list"></ul>
+    </div>
+  </section>
+  <div id="hz-msg" class="hz-msg" role="status" hidden></div>
+ 
+  <!-- Pestañas -->
+  <nav class="methods-nav" id="hz-tabs" role="tablist" aria-label="Vistas">
+    <button type="button" role="tab" id="tab-texto" data-tab="texto" aria-controls="view-texto" aria-selected="true" class="btn-method btn-active">Texto</button>
+    <button type="button" role="tab" id="tab-arbol" data-tab="arbol" aria-controls="view-arbol" aria-selected="false" class="btn-method">Árbol y códigos</button>
+  </nav>
+ 
+  <!-- Vista: Texto -->
+  <section id="view-texto" class="hz-view" role="tabpanel" aria-labelledby="tab-texto">
+    <p class="hz-vacio">Sube un .txt o busca un libro en Project Gutenberg y pulsa <b>Comprimir</b>.</p>
+    <div class="hz-body" hidden>
+      <div class="hz-title-row">
+        <h2 id="hz-titulo"></h2>
+        <span id="hz-lineas-label" class="hz-accent"></span>
+      </div>
+      <p class="hz-desc" id="hz-desc"></p>
+ 
+      <section class="hz-editor" aria-label="Editor">
+        <div class="hz-editor-bar">
+          <div class="hz-file"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></svg><span id="hz-filename"></span></div>
+          <div class="hz-toggle" role="group" aria-label="Modo de vista">
+            <button type="button" id="hz-ver-bin" class="on" aria-pressed="true"><code>01</code>Codificado</button>
+            <button type="button" id="hz-ver-txt" aria-pressed="false"><code>Aa</code>Normal</button>
+          </div>
+        </div>
+        <div class="hz-lines" id="hz-lines" tabindex="0" aria-label="Contenido"></div>
+        <div class="hz-editor-foot">
+          <span id="hz-status"></span>
+          <span class="hz-foot-right">
+            <button type="button" id="hz-mas" class="hz-link">Mostrar más</button>
+            <span id="hz-check" class="hz-check"></span>
+          </span>
+        </div>
+      </section>
+ 
+      <div class="hz-downloads">
+        <button type="button" id="hz-dl-huf" class="hz-link hz-muted-btn">Descargar .huf</button>
+        <button type="button" id="hz-dl-txt" class="hz-link hz-muted-btn">Descargar .txt decodificado</button>
+      </div>
+ 
+      <section class="hz-results-sec" aria-label="Resultados">
+        <div class="hz-sec-head">
+          <h3>Resultados</h3>
+          <span>tamaño original vs. codificado + tabla de frecuencias</span>
+        </div>
+        <div class="hz-stats" id="hz-stats-texto"></div>
+        <div class="hz-cmp" id="hz-cmp"></div>
+      </section>
+    </div>
+  </section>
+ 
+  <!-- Vista: Árbol y códigos -->
+  <section id="view-arbol" class="hz-view" role="tabpanel" aria-labelledby="tab-arbol" hidden>
+    <p class="hz-vacio">Comprime un texto para ver su árbol y la tabla de códigos.</p>
+    <div class="hz-body" hidden>
+      <div class="hz-title-row">
+        <h2>Árbol de Huffman</h2>
+        <span id="hz-arbol-label" class="hz-accent"></span>
+      </div>
+      <p class="hz-desc">En cada paso se toman los dos nodos de menor frecuencia y se unen en uno nuevo (técnica voraz). Los caracteres más frecuentes quedan cerca de la raíz y reciben los códigos más cortos.</p>
+ 
+      <div class="hz-stats" id="hz-stats-arbol"></div>
+ 
+      <div class="hz-legend">
+        <span class="lg"><i class="sw sw-0"></i>rama izquierda = 0</span>
+        <span class="lg"><i class="sw sw-1"></i>rama derecha = 1</span>
+        <span class="lg"><i class="dot dot-in"></i>nodo interno</span>
+        <span class="lg"><i class="dot dot-leaf"></i>hoja = carácter y frecuencia</span>
+        <span>␣ espacio · ↵ salto de línea</span>
+      </div>
+      <div class="hz-tree" id="hz-tree"></div>
+ 
+      <section class="hz-results-sec">
+        <div class="hz-sec-head">
+          <h3>Frecuencias y códigos</h3>
+          <span id="hz-tabla-label"></span>
+        </div>
+        <div class="hz-table-wrap">
+          <table class="hz-table">
+            <thead><tr><th>Carácter</th><th>Unicode</th><th>Frecuencia</th><th>%</th><th class="l">Código</th><th>Largo</th><th>Bits totales</th></tr></thead>
+            <tbody id="hz-tabla"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+<script src="js/huffman.js"></script>
+</body>
+</html>
+ 
