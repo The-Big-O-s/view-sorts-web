@@ -3,47 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VSA</title>
+  <title>VSA — Ordenamiento</title>
  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/inicio.css">
 </head>
-<body>
-  <!-- Barra fija: navegación entre secciones -->
+<body class="shell">
+  <!-- Barra fija: título y secciones -->
   <header class="header">
     <div class="header-container">
       <div class="brand">
-        <h1 class="main-title"><a href="index.html" class="brand-link">VSA</a></h1>
+        <h1 class="main-title"><a href="#ordenamiento" class="brand-link">VSA</a></h1>
       </div>
       <nav class="site-nav" aria-label="Secciones">
-        <a href="ordenamiento.html">Ordenamiento</a>
-        <a href="huffman.html">Huffman</a>
+        <a href="#ordenamiento" data-seccion="ordenamiento">Ordenamiento</a>
+        <a href="#huffman" data-seccion="huffman">Huffman</a>
       </nav>
     </div>
   </header>
  
-  <div id="app">
-    <section class="inicio">
-      <h2>Elige una sección</h2>
-      <p class="inicio-desc">Visualizadores de algoritmos para aprender cómo funcionan por dentro.</p>
+  <!-- Aquí se abre la sección elegida -->
+  <iframe id="vista" class="vista" title="Contenido de VSA"></iframe>
  
-      <div class="inicio-grid">
-        <a class="inicio-card" href="ordenamiento.html">
-          <h3>Ordenamiento</h3>
-          <p>Mira paso a paso ocho algoritmos (Bubble, Selection, Insertion, Quick, Gnome, Stooge, Exchange y Merge) y compáralos: comparaciones, movimientos y tiempo.</p>
-          <span class="inicio-go">Abrir →</span>
-        </a>
- 
-        <a class="inicio-card" href="huffman.html">
-          <h3>Huffman</h3>
-          <p>Comprime un .txt o cualquier libro de Project Gutenberg. Explora el árbol, los códigos de cada carácter y cuánto espacio se ahorra.</p>
-          <span class="inicio-go">Abrir →</span>
-        </a>
-      </div>
-    </section>
-  </div>
+  <script src="js/navegacion.js"></script>
 </body>
 </html>
