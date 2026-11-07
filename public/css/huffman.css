@@ -160,4 +160,25 @@
   .hz-search { flex: 1 1 100%; }
   .hz-current { justify-content: space-between; }
 }
+/* ===== Tabla de frecuencias y códigos ===== */
+.hz-vacio { text-align: center; color: var(--text-muted); padding: 60px 0; }
+.hz-body { max-width: 1100px; margin: 0 auto; }
+#view-arbol .hz-body { max-width: 1240px; }
+.hz-results-sec { margin-top: 30px; }
+.hz-sec-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+.hz-sec-head h3 { font-size: 1.5rem; font-weight: 600; }
+.hz-sec-head span { color: var(--text-muted); font-size: .85rem; }
+ 
+/* Tabla de códigos */
+.hz-table-wrap { overflow: auto; max-height: 620px; border: 1px solid var(--border-color); border-radius: 12px; }
+.hz-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.hz-table th, .hz-table td { padding: 10px 15px; text-align: right; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+.hz-table th:first-child, .hz-table td:first-child, .hz-table .l { text-align: left; }
+.hz-table th { position: sticky; top: 0; background: var(--bg-panel); color: var(--text-muted); font-weight: 400; font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; }
+.hz-table td.m { font-family: monospace; }
+.hz-table td.ch { font-family: monospace; font-size: 1rem; font-weight: bold; }
+.hz-table td.mu { color: var(--text-muted); font-size: .75rem; }
+.hz-table td.k { font-family: monospace; color: var(--c-bin); letter-spacing: 1.5px; text-align: left; }
+.fb { display: inline-block; width: 80px; height: 6px; background: var(--border-color); border-radius: 3px; vertical-align: middle; margin-right: 10px; overflow: hidden; }
+.fb i { display: block; height: 100%; background: #2563eb; }
  
