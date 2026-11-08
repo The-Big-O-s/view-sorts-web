@@ -3,15 +3,15 @@
   'use strict';
 
   const RUTAS = {
-    comprimir: '/api/hencode', // s
+    comprimir: '/api/hencode', 
     descomprimir: '/api/hdecode',
   };
-  const CAMPO_ARCHIVO = 'file'; // parámetro UploadFile de /api/hdecode (confirmado en decode.py)
-  const FIRMA = [0x54, 0x42, 0x4f, 0x53]; // "TBOS"
+  const CAMPO_ARCHIVO = 'file'; 
+  const FIRMA = [0x54, 0x42, 0x4f, 0x53]; 
 
   const inesperada = () => new Error('El servidor devolvió una respuesta inesperada.');
 
-  /* ── Mensajes de error en español ── */
+  
   function mensajeDeValidacion(detalle) {
     // FastAPI manda los errores 422 como una lista de objetos
     if (!Array.isArray(detalle)) return '';
@@ -34,7 +34,7 @@
       // el cuerpo no era JSON
     }
 
-    if (typeof detalle === 'string' && detalle) return detalle; // mensajes claros del backend (#75)
+    if (typeof detalle === 'string' && detalle) return detalle; 
     const validacion = mensajeDeValidacion(detalle);
     if (validacion) return validacion;
     if (respuesta.status === 413) return 'El texto es demasiado grande para el servidor.';
@@ -60,15 +60,14 @@
 
   // Cuerpo JSON: { "text": "..." }
   function pedirJson(ruta, objeto) {
-    if (window.hzSimulado) return window.hzSimulado(ruta, objeto); // modo sin backend (huffman-simulado.js)
+    if (window.hzSimulado) return window.hzSimulado(ruta, objeto); 
     return enviar(ruta, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(objeto),
     });
   }
 
-  // Archivo .tbos como form-data. NO se pone Content-Type a mano: el navegador lo arma
-  // solo, con el "boundary" que separa las partes del formulario.
+  
   function pedirArchivo(ruta, bytes) {
     if (window.hzSimulado) return window.hzSimulado(ruta, bytes);
     const form = new FormData();
@@ -123,13 +122,12 @@
       bitsTotales: r.encoded_bits,
       bytesTbos: tbos.length,
       simbolos: chars.map((ch) => ({ ch, freq: frec[ch], codigo: codigos[ch] })),
-      arbol: r.tree, // para #83 (árbol en SVG)
-      tbos, // el archivo completo (para verificarlo y descargarlo)
-      bytes: cuerpoDelTbos(tbos), // solo los datos codificados (lo que muestra el editor)
+      arbol: r.tree, 
+      tbos, 
+      bytes: cuerpoDelTbos(tbos), 
     };
   }
 
-  // B) Formato del PR de #76 (todavía sin .tbos)
   function adaptarStats(r) {
     const s = r.stats;
     const valido =
@@ -149,8 +147,8 @@
       bitsTotales: r.encoded.length,
       simbolos: r.symbols.map((x) => ({ ch: x.char, freq: x.frequency, codigo: x.code })),
       arbol: r.tree,
-      bits: r.encoded, // sin .tbos, el editor lee los bits directamente
-      tbos: null, // sin .tbos no hay verificación ni tamaño total
+      bits: r.encoded, 
+      tbos: null, 
     };
   }
 

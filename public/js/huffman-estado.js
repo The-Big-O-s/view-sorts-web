@@ -1,5 +1,3 @@
-// huffman-estado.js — estado de la página de Huffman, puente de eventos y pestañas (#82)
-//
 // Flujo:  fuente.js ──'fuente:comprimir'──▶ (este archivo) ──▶ API ──▶ 'huffman:resultado' ──▶ editor.js, tabla.js, resultados.js
 (() => {
   'use strict';
@@ -8,10 +6,10 @@
 
   /* ── Estado central (mismo patrón que estado.js del visualizador) ── */
   const estado = {
-    texto: null, // lo último que mandó fuente.js: { nombre, texto, meta }
-    resultado: null, // lo que se mandó en 'huffman:resultado'
-    vista: 'texto', // pestaña activa: 'texto' | 'arbol'
-    ocupado: false, // hay una petición en curso
+    texto: null, 
+    resultado: null, 
+    vista: 'texto', 
+    ocupado: false, 
     toast: [],
 
     // motivo: 'texto' | 'resultado' | 'vista' | 'ocupado'
@@ -27,7 +25,7 @@
     },
   };
 
-  /* ── Mensajes bajo la barra de fuente (el mismo #hz-msg que usa fuente.js) ── */
+  /* ── Mensajes bajo la barra de fuente ── */
   function mostrarMensaje(txt, error = false) {
     const m = $('hz-msg');
     m.hidden = !txt;
