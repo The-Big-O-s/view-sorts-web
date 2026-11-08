@@ -7,6 +7,8 @@ from .sorts.merge import router as merge
 from .sorts.quick import router as quick
 from .sorts.selection import router as selection
 from .sorts.stooge import router as stooge
+from .huffman.encode import router as hencode
+from .huffman.decode import router as hdecode
 
 app = FastAPI(
     title="Visualizador de Algoritmos",
@@ -14,7 +16,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
-routers = [bubble, exchange, gnome, insertion, merge, quick, selection, stooge]
+routers = [bubble, exchange, gnome, insertion, merge, quick, selection, stooge, hencode, hdecode]
 for router in routers:
     app.include_router(router)
 
