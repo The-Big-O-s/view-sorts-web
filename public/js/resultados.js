@@ -65,13 +65,18 @@
 
   function leer(x) {
     const simbolos = Array.isArray(x.simbolos) ? x.simbolos : null;
+    const frecuencias = x.frequencies != null && typeof x.frequencies === 'object' ? x.frequencies : null;
     return {
-      caracteres: x.n ?? (simbolos && sumar(simbolos, (s) => s.freq)),
-      bits: x.bitsTotales ?? (simbolos && sumar(simbolos, (s) => s.freq * s.codigo.length)),
+      caracteres:
+        x.n ??
+        (frecuencias && Object.values(frecuencias).reduce((total, f) => total + f, 0)) ??
+        (simbolos && sumar(simbolos, (s) => s.freq)),
+      bits: x.bitsTotales ?? x.encoded_bits ?? (simbolos && sumar(simbolos, (s) => s.freq * s.codigo.length)),
       original:
         x.bytesOriginal ??
+        (Number.isFinite(x.original_bits) ? x.original_bits / 8 : undefined) ??
         (typeof x.texto === 'string' ? new TextEncoder().encode(x.texto).length : undefined),
-      tbos: x.bytesTbos,
+      tbos: x.bytesTbos ?? x.tbos?.size_bytes,
     };
   }
 
@@ -91,7 +96,7 @@
       bits >= 0;
 
     if (!valido) {
-    
+      // Si el editor sí va a mostrar este resultado, no dejar cifras del texto anterior
       if (x.bytes || typeof x.bits === 'string') {
         console.warn('Resultados: faltan datos para las métricas', x);
         limpiar();
@@ -99,10 +104,10 @@
       return;
     }
 
-    const datosBytes = Math.ceil(bits / 8); 
+    const datosBytes = Math.ceil(bits / 8); // texto codificado, sin tabla
     const conTabla = Number.isFinite(tbos) && tbos >= 0;
     const codificado = conTabla ? tbos : datosBytes;
-    const tablaBytes = conTabla ? Math.max(0, tbos - datosBytes) : 0; 
+    const tablaBytes = conTabla ? Math.max(0, tbos - datosBytes) : 0; // firma + encabezado
 
     const ahorro = (1 - codificado / original) * 100;
     const ahorroDatos = (1 - datosBytes / original) * 100;
@@ -129,7 +134,7 @@
       )
     );
 
-    
+    // Todas las barras se escalan contra la más grande, para que ninguna se desborde
     const base = Math.max(original, codificado);
     const barras = [crearBarra('Original', original, base, 'orig')];
     if (conTabla) barras.push(crearBarra('Codificado + tabla (.tbos)', codificado, base));
@@ -138,5 +143,5 @@
   }
 
   document.addEventListener('huffman:resultado', (e) => mostrar(e.detail));
-  window.Resultados = { mostrar, limpiar }; 
+  window.Resultados = { mostrar, limpiar }; // por si se quiere llamar a mano desde la consola
 })();
