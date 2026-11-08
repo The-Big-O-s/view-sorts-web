@@ -9,3 +9,10 @@ class SortRequest(BaseModel):
         max_length=50,
         description="Lista de números enteros a ordenar"
     )
+
+class EncodeRequest(BaseModel):
+    text: str = Field(
+        ...,
+        min_length=1,
+        description="Texto a codificar con Huffman"
+    )
