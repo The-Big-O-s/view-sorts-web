@@ -17,7 +17,7 @@ def encode(text: str) -> dict:
     root = build_tree(frequencies)
     codes = build_codes(root)
     bits = "".join(codes[c] for c in text)
-    original_bits = len(text) * 8
+    original_bits = len(text.encode("utf-8")) * 8
     tbos = write_tbos(frequencies, bits)
 
     return {
