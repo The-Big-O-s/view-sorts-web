@@ -1,12 +1,12 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from huffman import build_tree
-from tbos import read_tbos
+from .huffman import build_tree
+from .tbos import read_tbos
 
 router = APIRouter()
 
 EXTENSION = ".tbos"
-MAX_BYTES = 4.5 * 1024 * 1024  # 5 MB
+MAX_BYTES = 4 * 1024 * 1024  # 5 MB
 
 
 def decode(bits: str, frequencies: dict[str, int]) -> dict:

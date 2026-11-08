@@ -1,8 +1,8 @@
 import base64
 from fastapi import APIRouter, HTTPException
-from huffman import build_codes, build_tree, count_frequencies, tree_to_dict
-from schemas import EncodeRequest
-from tbos import write_tbos
+from .huffman import build_codes, build_tree, count_frequencies, tree_to_dict
+from ..schemas import EncodeRequest
+from .tbos import write_tbos
 
 router = APIRouter()
 

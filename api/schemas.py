@@ -16,16 +16,3 @@ class EncodeRequest(BaseModel):
         min_length=1,
         description="Texto a codificar con Huffman"
     )
-
-class DecodeRequest(BaseModel):
-    bits: str = Field(
-        ...,
-        min_length=1,
-        pattern=r"^[01]+$",
-        description="Cadena de bits a decodificar (solo 0 y 1)"
-    )
-    frequencies: dict[str, int] = Field(
-        ...,
-        min_length=1,
-        description="Frecuencia de cada carácter, la misma que devolvió /api/hencode"
-    )
