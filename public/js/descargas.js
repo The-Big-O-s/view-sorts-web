@@ -3,7 +3,7 @@
   'use strict';
  
   const $ = id => document.getElementById(id);
-  const btnTbos = $('hz-dl-huf');   // el id viene de antes; el texto del botón ya dice .tbos
+  const btnTbos = $('hz-dl-huf');  
   const btnTxt = $('hz-dl-txt');
  
   let actual = null; // último resultado
@@ -50,4 +50,3 @@
   document.addEventListener('huffman:resultado', e => { actual = e.detail; actualizarBotones(); });
   actualizarBotones();
 })();
- 
