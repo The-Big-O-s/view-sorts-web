@@ -46,12 +46,6 @@
     if (!lista.hidden && !e.target.closest('#controls')) cerrarLista(); // clic fuera
   });
  
-  async function pedirJson(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || 'No se pudo conectar con el servidor');
-    return res;
-  }
- 
   $('hz-search').addEventListener('submit', async e => {
     e.preventDefault();
     const q = $('hz-q').value.trim();
@@ -59,10 +53,9 @@
     const btn = $('hz-buscar');
     btn.disabled = true; mensaje('Buscando en Project Gutenberg…');
     try {
-      const res = await pedirJson(`/api/gutenberg/search?q=${encodeURIComponent(q)}`);
-      mostrarResultados(await res.json());
+      mostrarResultados(await window.hzEstado.buscarLibros(q));
       mensaje('');
-    } catch (err) { mensaje(err.message, true); }
+}  catch (err) { mensaje(err.message, true); }
     finally { btn.disabled = false; }
   });
  
@@ -86,10 +79,10 @@
  
   async function usarLibro(libro, boton) {
     boton.disabled = true; boton.textContent = 'Cargando…';
-    try {
-      const res = await pedirJson(`/api/gutenberg/book/${libro.id}`);
-      cargar(libro.title, await res.text(), `${libro.authors || 'Autor desconocido'} · Project Gutenberg #${libro.id}`);
-      cerrarLista();
+   try {
+    const libroCargado = await window.hzEstado.cargarLibro(libro);
+    cargar(libroCargado.nombre, libroCargado.texto, libroCargado.meta);
+    cerrarLista();
     } catch (err) {
       mensaje(err.message, true);
       boton.disabled = false; boton.textContent = 'Usar';
