@@ -1,18 +1,21 @@
-// Flujo:  fuente.js ──'fuente:comprimir'──▶ (este archivo) ──▶ API ──▶ 'huffman:resultado' ──▶ editor.js, tabla.js, resultados.js
+
 (() => {
   'use strict';
 
   const $ = (id) => document.getElementById(id);
 
-  /* ── Estado central (mismo patrón que estado.js del visualizador) ── */
+  /* ── Estado central  ── */
   const estado = {
-    texto: null, 
-    resultado: null, 
-    vista: 'texto', 
-    ocupado: false, 
+    texto: null,          // fuente cargada: { nombre, texto, meta }
+    resultado: null,      // último resultado de comprimir (ya adaptado)
+    vista: 'texto',       // pestaña activa: 'texto' | 'arbol'
+    ocupado: false,       // hay una compresión en curso
+    busqueda: { consulta: '', total: 0, resultados: [] }, // última búsqueda en Gutenberg
+    buscando: false,      // hay una búsqueda en curso
+    cargandoLibro: null,  // id del libro que se está descargando (null si ninguno)
     toast: [],
 
-    // motivo: 'texto' | 'resultado' | 'vista' | 'ocupado'
+    // motivo: 'texto' | 'resultado' | 'vista' | 'ocupado' | 'busqueda' | 'buscando' | 'libro'
     fil(fn) {
       estado.toast.push(fn);
     },
@@ -33,9 +36,42 @@
     m.classList.toggle('error', error);
   }
 
+  /* ── Gutenberg: buscar y descargar libros ── */
+  let pedidoBusqueda = 0; 
+  async function buscarLibros(consulta) {
+    const mio = ++pedidoBusqueda;
+    estado.cambiar('buscando', { buscando: true });
+    try {
+      const r = await window.hzApi.buscarLibros(consulta);
+      if (mio === pedidoBusqueda) {
+        estado.cambiar('busqueda', {
+          busqueda: { consulta: String(consulta).trim(), total: r.count, resultados: r.results },
+        });
+      }
+      return r; 
+    } finally {
+      if (mio === pedidoBusqueda) estado.cambiar('buscando', { buscando: false });
+    }
+  }
+
+  async function cargarLibro(libro) {
+    if (estado.cargandoLibro != null) throw new Error('Ya se está descargando un libro.');
+    estado.cambiar('libro', { cargandoLibro: libro.id });
+    try {
+      const texto = await window.hzApi.obtenerLibro(libro.id);
+      return {
+        nombre: libro.title,
+        texto,
+        meta: `${libro.authors || 'Autor desconocido'} · Project Gutenberg #${libro.id}`,
+      }; 
+    } finally {
+      estado.cambiar('libro', { cargandoLibro: null });
+    }
+  }
+
   /* ── Comprimir: texto → API → verificación → evento con el resultado ── */
   async function comprimir(fuente) {
-    if (estado.ocupado) return; // ya hay una compresión en curso
+    if (estado.ocupado) return; 
     const boton = $('hz-run');
     boton.disabled = true;
     estado.cambiar('texto', { texto: fuente, ocupado: true });
@@ -111,5 +147,7 @@
 
   pintarVista(estado.vista);
 
+  estado.buscarLibros = buscarLibros;
+  estado.cargarLibro = cargarLibro;
   window.hzEstado = estado;
-})();s
+})();

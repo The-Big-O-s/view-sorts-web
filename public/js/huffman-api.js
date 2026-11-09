@@ -1,17 +1,19 @@
-
 (() => {
   'use strict';
 
   const RUTAS = {
-    comprimir: '/api/hencode', 
+    comprimir: '/api/hencode',
     descomprimir: '/api/hdecode',
+    gutenbergBuscar: '/api/gutenberg/search', 
+    gutenbergLibro: '/api/gutenberg/book',    
   };
-  const CAMPO_ARCHIVO = 'file'; 
-  const FIRMA = [0x54, 0x42, 0x4f, 0x53]; 
+  const CAMPO_ARCHIVO = 'file';
+  const FIRMA = [0x54, 0x42, 0x4f, 0x53];
 
   const inesperada = () => new Error('El servidor devolvió una respuesta inesperada.');
+  const esNumero = (x) => Number.isFinite(x) && x >= 0;
+  const esObjeto = (x) => x != null && typeof x === 'object';
 
-  
   function mensajeDeValidacion(detalle) {
     // FastAPI manda los errores 422 como una lista de objetos
     if (!Array.isArray(detalle)) return '';
@@ -34,25 +36,35 @@
       // el cuerpo no era JSON
     }
 
-    if (typeof detalle === 'string' && detalle) return detalle; 
+    if (typeof detalle === 'string' && detalle) return detalle;
     const validacion = mensajeDeValidacion(detalle);
     if (validacion) return validacion;
+    if (respuesta.status === 404) return 'El servidor no encontró lo que se pidió.';
     if (respuesta.status === 413) return 'El texto es demasiado grande para el servidor.';
     if (respuesta.status === 422) return 'El servidor no pudo leer lo que se envió.';
+    if ([502, 503, 504].includes(respuesta.status)) {
+      return 'El servicio externo no respondió. Intenta de nuevo.';
+    }
     if (respuesta.status >= 500) return 'El servidor tuvo un problema. Intenta de nuevo.';
     return `El servidor respondió con error ${respuesta.status}.`;
   }
 
-  /* ── Peticiones POST ── */
-  async function enviar(ruta, opciones) {
+  /* ── Peticiones ── */
+  // Base: hace el fetch y traduce los errores. Devuelve la respuesta sin leer el cuerpo.
+  async function pedir(ruta, opciones) {
     let respuesta;
     try {
-      respuesta = await fetch(ruta, { method: 'POST', ...opciones });
+      respuesta = await fetch(ruta, opciones);
     } catch {
       throw new Error('No se pudo conectar con el servidor.');
     }
     if (!respuesta.ok) throw new Error(await leerError(respuesta));
+    return respuesta;
+  }
 
+  // POST que espera JSON de vuelta
+  async function enviar(ruta, opciones) {
+    const respuesta = await pedir(ruta, { method: 'POST', ...opciones });
     const datos = await respuesta.json().catch(() => null);
     if (datos == null) throw inesperada();
     return datos;
@@ -60,16 +72,14 @@
 
   // Cuerpo JSON: { "text": "..." }
   function pedirJson(ruta, objeto) {
-    if (window.hzSimulado) return window.hzSimulado(ruta, objeto); 
     return enviar(ruta, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(objeto),
     });
   }
 
-  
+  // Cuerpo multipart: no se pone Content-Type, el navegador arma el boundary
   function pedirArchivo(ruta, bytes) {
-    if (window.hzSimulado) return window.hzSimulado(ruta, bytes);
     const form = new FormData();
     form.append(CAMPO_ARCHIVO, new Blob([bytes]), 'comprimido.tbos');
     return enviar(ruta, { body: form });
@@ -96,11 +106,9 @@
     return tbos.subarray(8 + tamEncabezado);
   }
 
-  /* ── De la respuesta del backend a lo que esperan editor.js, tabla.js y resultados.js ── */
-  const esNumero = (x) => Number.isFinite(x) && x >= 0;
-  const esObjeto = (x) => x != null && typeof x === 'object';
+  
 
-  // A) Formato de /api/hencode
+  // Formato de /api/hencode
   function adaptarHencode(r, texto) {
     const frec = r.frequencies;
     const codigos = r.codes;
@@ -122,12 +130,13 @@
       bitsTotales: r.encoded_bits,
       bytesTbos: tbos.length,
       simbolos: chars.map((ch) => ({ ch, freq: frec[ch], codigo: codigos[ch] })),
-      arbol: r.tree, 
-      tbos, 
-      bytes: cuerpoDelTbos(tbos), 
+      arbol: r.tree,
+      tbos,
+      bytes: cuerpoDelTbos(tbos),
     };
   }
 
+  // Formato de /api/huffman/compress (symbols, tree, encoded, stats)
   function adaptarStats(r) {
     const s = r.stats;
     const valido =
@@ -147,8 +156,8 @@
       bitsTotales: r.encoded.length,
       simbolos: r.symbols.map((x) => ({ ch: x.char, freq: x.frequency, codigo: x.code })),
       arbol: r.tree,
-      bits: r.encoded, 
-      tbos: null, 
+      bits: r.encoded,
+      tbos: null,
     };
   }
 
@@ -156,6 +165,38 @@
     if (r?.tbos?.content_base64 !== undefined) return adaptarHencode(r, texto);
     if (r?.stats && typeof r.encoded === 'string') return adaptarStats(r);
     throw inesperada();
+  }
+
+  /* ── Project Gutenberg ── */
+  async function buscarLibros(consulta) {
+    const q = String(consulta ?? '').trim();
+    if (!q) throw new Error('Escribe un título o autor para buscar.');
+
+    const respuesta = await pedir(`${RUTAS.gutenbergBuscar}?q=${encodeURIComponent(q)}`);
+    const datos = await respuesta.json().catch(() => null);
+    if (!esObjeto(datos) || !Array.isArray(datos.results)) throw inesperada();
+
+    const results = datos.results
+      .filter((l) => esObjeto(l) && l.id != null && typeof l.title === 'string')
+      .map((l) => ({
+        id: l.id,
+        title: l.title,
+        authors: typeof l.authors === 'string' ? l.authors : '',
+        downloads: esNumero(l.downloads) ? l.downloads : 0,
+      }));
+
+    return { count: esNumero(datos.count) ? datos.count : results.length, results };
+  }
+
+  // Texto plano del libro
+  async function obtenerLibro(id) {
+    const num = Number(id);
+    if (!Number.isInteger(num) || num <= 0) throw new Error('Identificador de libro inválido.');
+
+    const respuesta = await pedir(`${RUTAS.gutenbergLibro}/${num}`);
+    const texto = await respuesta.text();
+    if (!texto.trim()) throw new Error('El libro llegó vacío.');
+    return texto;
   }
 
   /* ── API pública ── */
@@ -169,5 +210,5 @@
     return r.text;
   }
 
-  window.hzApi = { comprimir, descomprimir, RUTAS };
+  window.hzApi = { comprimir, descomprimir, buscarLibros, obtenerLibro, RUTAS };
 })();
