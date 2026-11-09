@@ -69,7 +69,7 @@
     const bytesTot = d.bytes ? d.bytes.length : Math.ceil(d.bits.length / 8);
     const bitsTot = d.bitsTotales ?? (d.bytes ? d.bytes.length * 8 : d.bits.length);
     $('hz-lineas-label').textContent = `${fmt(cargadas)} de ${fmt(total)} líneas`;
-    $('hz-filename').textContent = (d.nombre ?? 'archivo') + (vista === 'bin' ? '.huf' : '.txt');
+    $('hz-filename').textContent = (d.nombre ?? 'archivo') + (vista === 'bin' ? '.tbos' : '.txt');
     $('hz-status').textContent = vista === 'bin'
       ? `${fmt(bytesTot)} bytes · ${fmt(bitsTot)} bits · ${BYTES_POR_LINEA} bytes por línea`
       : `${fmt(d.n ?? d.texto.length)} caracteres decodificados`;
