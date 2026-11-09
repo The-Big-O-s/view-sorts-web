@@ -143,5 +143,5 @@
   }
 
   document.addEventListener('huffman:resultado', (e) => mostrar(e.detail));
-  window.Resultados = { mostrar, limpiar }; 
+  window.Resultados = { mostrar, limpiar }; // por si se quiere llamar a mano desde la consola
 })();
