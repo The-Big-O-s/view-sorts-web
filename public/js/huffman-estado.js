@@ -112,4 +112,4 @@
   pintarVista(estado.vista);
 
   window.hzEstado = estado;
-})();s
+})();
