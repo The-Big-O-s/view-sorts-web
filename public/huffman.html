@@ -49,6 +49,7 @@
   <nav class="methods-nav" id="hz-tabs" role="tablist" aria-label="Vistas">
     <button type="button" role="tab" id="tab-texto" data-tab="texto" aria-controls="view-texto" aria-selected="true" class="btn-method btn-active">Texto</button>
     <button type="button" role="tab" id="tab-arbol" data-tab="arbol" aria-controls="view-arbol" aria-selected="false" class="btn-method">Árbol y códigos</button>
+    <button type="button" role="tab" id="tab-descomprimir" data-tab="descomprimir" aria-controls="view-descomprimir" aria-selected="false" class="btn-method">Descomprimir .tbos</button>
   </nav>
  
   <!-- Vista: Texto -->
@@ -130,6 +131,40 @@
       </section>
     </div>
   </section>
+    <!-- Vista: Descomprimir un .tbos -->
+  <section id="view-descomprimir" class="hz-view" role="tabpanel" aria-labelledby="tab-descomprimir" hidden>
+    <div class="hz-body">
+      <div class="hz-title-row">
+        <h2>Descomprimir un .tbos</h2>
+        <span id="hz-d-label" class="hz-accent"></span>
+      </div>
+      <p class="hz-desc">Sube un archivo .tbos generado aquí y el servidor lo decodifica para recuperar el texto original.</p>
+ 
+      <label class="hz-drop" id="hz-d-drop" for="hz-d-file">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <span><b>Elige un archivo .tbos</b> o arrástralo aquí</span>
+      </label>
+      <input id="hz-d-file" class="sr-only" type="file" accept=".tbos">
+      <div id="hz-d-msg" class="hz-msg" role="status" hidden></div>
+ 
+      <div id="hz-d-resultado" hidden>
+        <div class="hz-stats" id="hz-d-stats"></div>
+        <section class="hz-editor" aria-label="Texto decodificado">
+          <div class="hz-editor-bar">
+            <div class="hz-file"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></svg><span id="hz-d-filename"></span></div>
+          </div>
+          <div class="hz-lines" id="hz-d-lines" tabindex="0" aria-label="Texto decodificado"></div>
+          <div class="hz-editor-foot">
+            <span id="hz-d-status"></span>
+            <span class="hz-foot-right"><button type="button" id="hz-d-mas" class="hz-link">Mostrar más</button></span>
+          </div>
+        </section>
+        <div class="hz-downloads">
+          <button type="button" id="hz-d-dl" class="hz-link hz-muted-btn">Descargar .txt decodificado</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 <script src="js/fuente.js"></script>
 <script src="js/tabla.js"></script>
@@ -139,6 +174,7 @@
 <script src="js/huffman-api.js"></script>
 <script src="js/huffman-estado.js"></script>
 <script src="js/arbol.js"></script>
+<script src="js/descomprimir.js"></script>
 </body>
 </html>
  
