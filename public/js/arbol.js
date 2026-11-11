@@ -16,9 +16,73 @@
   const MARGEN = 28;
   const MAX_HOJAS = 500; // con más hojas el dibujo pasaría de 25,000 px de ancho: mejor avisar
 
+   // Zoom: el árbol se escala para caber en el ancho disponible
+  const ESCALA_MIN = 0.15; // por debajo de esto no se distingue nada: si aún no cabe, aparece scroll
+  const ESCALA_MAX = 1.5;  // tope del botón +
+  const PASO_ZOOM = 1.25;  // cuánto cambia con cada + o −
+  const HISTERESIS = 0.02; // al cambiar el tamaño de la ventana, ignora variaciones menores a 2 %
+
   const cont = $('hz-tree');
   const statsBox = $('hz-stats-arbol');
   const etiqueta = $('hz-arbol-label');
+
+    /* ── Zoom: estado y barra de botones ── */
+  let medidas = null;      // tamaño natural del dibujo { ancho, alto } en px
+  const alto = altura * SEP_Y + HOJA_H + MARGEN * 2;
+  medidas = { ancho, alto };
+  let svgActual = null;
+  let escala = 1;          // escala actual (1 = tamaño natural)
+  let modoAjustar = true;  // true: el árbol se ajusta solo al ancho; false: zoom manual
+
+  const limitar = (e) => Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, e));
+
+  const barraZoom = document.createElement('div');
+  barraZoom.className = 'hz-zoom';
+  barraZoom.hidden = true;
+  const salidaZoom = document.createElement('output');
+  salidaZoom.setAttribute('aria-live', 'polite');
+
+  function boton(texto, ayuda, alClic) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = texto;
+    b.setAttribute('aria-label', ayuda);
+    b.title = ayuda;
+    b.addEventListener('click', alClic);
+    return b;
+  }
+  const btnMenos = boton('−', 'Alejar', () => cambiarEscala(escala / PASO_ZOOM, true));
+  const btnMas = boton('+', 'Acercar', () => cambiarEscala(escala * PASO_ZOOM, true));
+  const btnAjustar = boton('Ajustar', 'Ajustar el árbol al ancho disponible', () => { cambiarEscala(escalaAjustada(), false); centrar(); });
+  const btnReal = boton('100 %', 'Tamaño real', () => cambiarEscala(1, true));
+  barraZoom.append(salidaZoom, btnMenos, btnMas, btnAjustar, btnReal);
+  cont.before(barraZoom);
+
+  // Escala con la que el árbol completo cabe en el ancho del contenedor (sin agrandar nunca más de 100 %)
+  function escalaAjustada() {
+    const estilo = getComputedStyle(cont);
+    const relleno = (parseFloat(estilo.paddingLeft) || 0) + (parseFloat(estilo.paddingRight) || 0);
+    return limitar(Math.min(1, (cont.clientWidth - relleno) / medidas.ancho));
+  }
+
+  function aplicarEscala() {
+    if (!svgActual) return;
+    svgActual.setAttribute('width', Math.round(medidas.ancho * escala));
+    svgActual.setAttribute('height', Math.round(medidas.alto * escala));
+    salidaZoom.textContent = `${Math.round(escala * 100)} %`;
+    btnMenos.disabled = escala <= ESCALA_MIN + 1e-6;
+    btnMas.disabled = escala >= ESCALA_MAX - 1e-6;
+  }
+
+  // Cambia la escala conservando lo que está en el centro de la vista
+  function cambiarEscala(nueva, manual) {
+    if (!svgActual) return;
+    const centro = (cont.scrollLeft + cont.clientWidth / 2) / escala; // en coordenadas del dibujo
+    modoAjustar = !manual;
+    escala = limitar(nueva);
+    aplicarEscala();
+    if (manual) cont.scrollLeft = Math.max(0, centro * escala - cont.clientWidth / 2);
+  }
 
   // El contenedor tiene scroll: con tabindex se puede recorrer con las flechas del teclado
   cont.tabIndex = 0;
@@ -199,21 +263,28 @@
   let pendienteCentrar = false;
 
   function centrar() {
-    cont.scrollLeft = Math.max(0, raizX - cont.clientWidth / 2);
+    cont.scrollLeft = Math.max(0, raizX * escala  - cont.clientWidth / 2);
     cont.scrollTop = 0;
     pendienteCentrar = false;
   }
 
-  // El árbol se dibuja mientras la pestaña está oculta (clientWidth = 0): se centra
-  // en cuanto el contenedor se vuelve visible.
+  // El árbol se dibuja mientras la pestaña está oculta (clientWidth = 0): se ajusta y se centra
+  // en cuanto el contenedor se vuelve visible. También reajusta si cambia el tamaño de la ventana.
   if (typeof ResizeObserver !== 'undefined') {
     new ResizeObserver(() => {
-      if (pendienteCentrar && cont.clientWidth > 0) centrar();
+      if (!svgActual || cont.clientWidth === 0) return;
+      if (modoAjustar) {
+        const nueva = escalaAjustada();
+        if (Math.abs(nueva - escala) / escala > HISTERESIS) { escala = nueva; aplicarEscala(); }
+      }
+      if (pendienteCentrar) centrar();
     }).observe(cont);
   }
 
   /* ── API pública ── */
   function limpiar() {
+    svgActual = null;
+    barraZoom.hidden = true;
     cont.replaceChildren();
     statsBox.replaceChildren();
     etiqueta.textContent = '';
@@ -239,8 +310,14 @@
     }
 
     const diseno = disponer(arbol);
-    cont.replaceChildren(dibujarSvg(diseno));
+    svgActual = dibujarSvg(diseno);
+    cont.replaceChildren(svgActual);
     pintarDatos(diseno);
+
+    modoAjustar = true;
+    escala = cont.clientWidth > 0 ? escalaAjustada() : 1; // si la pestaña está oculta, se ajusta al mostrarse
+    aplicarEscala();
+    barraZoom.hidden = false;
 
     raizX = diseno.nodos[0].x;
     pendienteCentrar = true;
