@@ -153,4 +153,11 @@ input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius
   .site-nav a { padding: 6px 14px; font-size: .85rem; }
 }
 @media (prefers-reduced-motion: reduce) { .header { transition: none; } }
+ /* ===== Pestaña "Descomprimir .tbos" — pégalo al final de huffman.css ===== */
+.hz-drop { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 36px 20px; border: 1.5px dashed var(--border-color); border-radius: 12px; color: var(--text-muted); cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+.hz-drop svg { color: var(--accent); flex: none; }
+.hz-drop b { color: var(--text-main); font-weight: 600; }
+.hz-drop:hover, .hz-drop:focus-within, .hz-drop.sobre { border-color: var(--accent); background: rgba(59, 130, 246, .06); color: var(--text-main); }
+#hz-d-resultado { margin-top: 28px; }
+#hz-d-msg { margin-top: 16px; margin-bottom: 0; }
  

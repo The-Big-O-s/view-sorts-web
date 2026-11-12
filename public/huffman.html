@@ -27,6 +27,11 @@
       <input type="search" id="hz-q" placeholder="Buscar cualquier libro por título o autor" aria-label="Buscar en Project Gutenberg por título o autor">
       <button type="submit" class="btn-accent" id="hz-buscar">Buscar</button>
     </form>
+    <label class="hz-pill hz-upload" for="hz-tbos-file">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
+      <span>Descomprimir .tbos</span>
+    </label>
+    <input id="hz-tbos-file" class="sr-only" type="file" accept=".tbos">
  
     <div class="hz-pill hz-current">
       <span id="hz-current-label"><span class="hz-muted">Ningún archivo cargado</span></span>
@@ -139,6 +144,7 @@
 <script src="js/huffman-api.js"></script>
 <script src="js/huffman-estado.js"></script>
 <script src="js/arbol.js"></script>
+<script src="js/descomprimir.js"></script>
 </body>
 </html>
  

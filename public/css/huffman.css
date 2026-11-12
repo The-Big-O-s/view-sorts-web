@@ -182,3 +182,10 @@
 .fb { display: inline-block; width: 80px; height: 6px; background: var(--border-color); border-radius: 3px; vertical-align: middle; margin-right: 10px; overflow: hidden; }
 .fb i { display: block; height: 100%; background: #2563eb; }
 .hz-toggle button:disabled { opacity: .4; cursor: not-allowed; }
+/* ===== Zoom del árbol ===== */
+.hz-zoom { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 10px; font-size: .8rem; color: var(--text-muted); }
+.hz-zoom output { min-width: 4ch; margin-right: 4px; text-align: right; }
+.hz-zoom button { background: none; border: 1px solid var(--border-color); border-radius: 16px; color: var(--text-main); font: inherit; font-size: .8rem; padding: 3px 12px; cursor: pointer; transition: border-color .2s; }
+.hz-zoom button:hover:not(:disabled) { border-color: var(--accent); }
+.hz-zoom button:disabled { opacity: .4; cursor: not-allowed; }
+.hz-tree line { vector-effect: non-scaling-stroke; }
