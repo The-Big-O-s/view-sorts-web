@@ -10,17 +10,17 @@
   // Medidas del dibujo (px)
   const HOJA_W = 44;
   const HOJA_H = 44;
-  const SEP_X = 54; // distancia horizontal entre hojas
-  const SEP_Y = 72; // distancia vertical entre niveles
-  const RADIO = 8; // radio de los nodos internos
+  const SEP_X = 54;
+  const SEP_Y = 72; 
+  const RADIO = 8; 
   const MARGEN = 28;
-  const MAX_HOJAS = 500; // con más hojas el dibujo pasaría de 25,000 px de ancho: mejor avisar
+  const MAX_HOJAS = 500; 
 
    // Zoom: el árbol se escala para caber en el ancho disponible
-  const ESCALA_MIN = 0.15; // por debajo de esto no se distingue nada: si aún no cabe, aparece scroll
-  const ESCALA_MAX = 1.5;  // tope del botón +
-  const PASO_ZOOM = 1.25;  // cuánto cambia con cada + o −
-  const HISTERESIS = 0.02; // al cambiar el tamaño de la ventana, ignora variaciones menores a 2 %
+  const ESCALA_MIN = 0.15; 
+  const ESCALA_MAX = 1.5; 
+  const PASO_ZOOM = 1.25; 
+  const HISTERESIS = 0.02;
 
   const cont = $('hz-tree');
   const statsBox = $('hz-stats-arbol');
@@ -28,8 +28,6 @@
 
     /* ── Zoom: estado y barra de botones ── */
   let medidas = null;      // tamaño natural del dibujo { ancho, alto } en px
-  const alto = altura * SEP_Y + HOJA_H + MARGEN * 2;
-  medidas = { ancho, alto };
   let svgActual = null;
   let escala = 1;          // escala actual (1 = tamaño natural)
   let modoAjustar = true;  // true: el árbol se ajusta solo al ancho; false: zoom manual
@@ -310,6 +308,10 @@
     }
 
     const diseno = disponer(arbol);
+    const anchoDibujo = (diseno.hojas.length - 1) * SEP_X + HOJA_W + MARGEN * 2;
+    const altoDibujo = diseno.altura * SEP_Y + HOJA_H + MARGEN * 2;
+    medidas = { ancho: anchoDibujo, alto: altoDibujo };
+
     svgActual = dibujarSvg(diseno);
     cont.replaceChildren(svgActual);
     pintarDatos(diseno);
